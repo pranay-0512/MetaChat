@@ -96,7 +96,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="right">
-        Registered Users:
+        
       </div>
     </div>
   );
