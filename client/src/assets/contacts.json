@@ -1,0 +1,255 @@
+[
+    {
+      "name": "Pranay",
+      "messages": [
+        { "value": "Hey I sent you a file.", "status": "sent" },
+        { "value": "Hey I received your file.", "status": "received" },
+        { "value": "Hey I sent you a file.", "status": "sent" },
+        { "value": "Hello I got your file your file.", "status": "received" },
+        { "value": "Hey I sent you a file.", "status": "sent" },
+        { "value": "This is a random message.", "status": "sent" },
+        { "value": "Thanks for the information.", "status": "received" },
+        { "value": "Hello, how are you?", "status": "sent" },
+        { "value": "I'm doing well, thanks!", "status": "received" },
+        { "value": "Do you have any plans for the weekend?", "status": "sent" },
+        {
+          "value": "Not yet. Maybe we can hang out? In the above code, I added the :hover pseudo-class selector to the .chat-item class and set the opacity property to 0.9. Additionally, I included a transition property to make the opacity change smoothly over 0.3 seconds. Feel free to adjust the transition duration or other properties to suit your preferences. ",
+          "status": "received"
+        }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Rajat",
+      "messages": [
+        { "value": "Hello, how are you?", "status": "sent" },
+        { "value": "I'm doing well, thanks!", "status": "received" },
+        { "value": "Do you have any plans for the weekend?", "status": "sent" },
+        { "value": "Not yet. Maybe we can hang out?", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Suresh",
+      "messages": [
+        { "value": "Good morning!", "status": "received" },
+        { "value": "Good morning to you too!", "status": "sent" },
+        { "value": "How's your day going so far?", "status": "sent" },
+        {
+          "value": "It's been busy, but productive. What about you?",
+          "status": "received"
+        }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Geet",
+      "messages": [
+        { "value": "Hi, how are you doing?", "status": "sent" },
+        { "value": "I'm doing great! What about you?", "status": "received" },
+        {
+          "value": "I'm doing well too. Any plans for the evening?",
+          "status": "sent"
+        },
+        { "value": "Not really. Just relaxing at home.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Tatya",
+      "messages": [
+        { "value": "Hey, did you watch the latest movie?", "status": "sent" },
+        { "value": "Yes, I watched it. It was amazing!", "status": "received" },
+        { "value": "I heard the soundtrack is great too.", "status": "sent" },
+        { "value": "Absolutely! The music is fantastic.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Hemant",
+      "messages": [
+        { "value": "Hello there", "status": "sent" },
+        { "value": "Hey", "status": "received" },
+        { "value": "I know this", "status": "sent" },
+        { "value": "Yeah, it's a common issue.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "John",
+      "messages": [
+        { "value": "Hey, how's it going?", "status": "sent" },
+        { "value": "I'm good! Just busy with work.", "status": "received" },
+        { "value": "Got any plans for the weekend?", "status": "sent" },
+        {
+          "value": "Not yet, but I'm thinking of going hiking.",
+          "status": "received"
+        }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Emily",
+      "messages": [
+        { "value": "Hi, long time no see!", "status": "sent" },
+        { "value": "I know! It's been ages.", "status": "received" },
+        { "value": "We should catch up sometime.", "status": "sent" },
+        { "value": "Definitely! Let's plan a meetup soon.", "status": "received" }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Michael",
+      "messages": [
+        { "value": "Hey, did you hear the news?", "status": "sent" },
+        { "value": "No, what's happening?", "status": "received" },
+        {
+          "value": "There's a new restaurant opening downtown.",
+          "status": "sent"
+        },
+        {
+          "value": "That sounds exciting! I can't wait to try it.",
+          "status": "received"
+        }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Sarah",
+      "messages": [
+        { "value": "Hello! How are you doing today?", "status": "sent" },
+        {
+          "value": "Hi! I'm doing great, thanks for asking.",
+          "status": "received"
+        },
+        { "value": "Any plans for the evening?", "status": "sent" },
+        { "value": "I'm meeting some friends for dinner.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "David",
+      "messages": [
+        { "value": "Hey, have you seen the latest episode?", "status": "sent" },
+        { "value": "Yes, it was mind-blowing!", "status": "received" },
+        { "value": "I can't wait for the next one.", "status": "sent" },
+        {
+          "value": "Me neither! The suspense is killing me.",
+          "status": "received"
+        }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Emma",
+      "messages": [
+        { "value": "Good morning! How's your day going?", "status": "sent" },
+        {
+          "value": "Good morning! It's going well so far.",
+          "status": "received"
+        },
+        { "value": "Any plans for the weekend?", "status": "sent" },
+        {
+          "value": "I'm planning to go shopping and relax.",
+          "status": "received"
+        }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Daniel",
+      "messages": [
+        { "value": "Hey, are you free for a quick chat?", "status": "sent" },
+        { "value": "Sure, what's on your mind?", "status": "received" },
+        { "value": "I need some advice on a project.", "status": "sent" },
+        {
+          "value": "I'd be happy to help. Let's discuss it.",
+          "status": "received"
+        }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Olivia",
+      "messages": [
+        { "value": "Hi there! How's your day going?", "status": "sent" },
+        { "value": "Hi! It's going great, thank you.", "status": "received" },
+        { "value": "What are your plans for the weekend?", "status": "sent" },
+        { "value": "I'm planning to visit my family.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "William",
+      "messages": [
+        { "value": "Hey! Long time no talk.", "status": "sent" },
+        { "value": "I know! We should catch up soon.", "status": "received" },
+        { "value": "Let's plan a meetup next week.", "status": "sent" },
+        {
+          "value": "That sounds like a plan. Looking forward to it.",
+          "status": "received"
+        }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Ava",
+      "messages": [
+        { "value": "Hello, how's your day going?", "status": "sent" },
+        {
+          "value": "Hi! It's been a productive day so far.",
+          "status": "received"
+        },
+        { "value": "Got any exciting plans for the evening?", "status": "sent" },
+        { "value": "I'm meeting some friends for a movie.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "James",
+      "messages": [
+        { "value": "Hey, did you watch the game last night?", "status": "sent" },
+        { "value": "No, I missed it. Who won?", "status": "received" },
+        { "value": "Our team won with a score of 3-1.", "status": "sent" },
+        { "value": "That's great! They played well.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Sophia",
+      "messages": [
+        { "value": "Hey, long time no see!", "status": "sent" },
+        {
+          "value": "I know! It's been ages. How have you been?",
+          "status": "received"
+        },
+        { "value": "I've been good. Let's meet up soon.", "status": "sent" },
+        { "value": "Definitely! I miss our hangouts.", "status": "received" }
+      ],
+      "isOnline": false
+    },
+    {
+      "name": "Jacob",
+      "messages": [
+        { "value": "Hi, how's your day going?", "status": "sent" },
+        {
+          "value": "Hi! It's going well. Thanks for asking.",
+          "status": "received"
+        },
+        { "value": "Any plans for the weekend?", "status": "sent" },
+        { "value": "I'm thinking of going for a hike.", "status": "received" }
+      ],
+      "isOnline": true
+    },
+    {
+      "name": "Isabella",
+      "messages": [
+        { "value": "Hey there! How's everything?", "status": "sent" },
+        { "value": "Hey! Everything's great, thanks.", "status": "received" },
+        { "value": "What have you been up to lately?", "status": "sent" },
+        { "value": "Just working on some new projects.", "status": "received" }
+      ],
+      "isOnline": true
+    }
+  ]
+  
