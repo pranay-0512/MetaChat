@@ -1,0 +1,72 @@
+.container {
+    display: flex;
+    width: 100%;
+  }
+  
+  .left,
+  .right {
+    flex-basis: 25%;
+    padding: 10px;
+    border-radius: 10px;
+    user-select: none;
+    overflow-y: auto;
+  }
+  .chat-item {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    background-color: rgb(49, 255, 186);
+    padding: 5px;
+    border-radius: 10px;
+    border: 3px solid rgb(49, 255, 186);
+    box-shadow: -5px 5px 20px rgb(49, 255, 180);
+    cursor: pointer;
+    transition: transform 0.3s ease-out;
+  }
+  .chat-item:hover{
+    transform: translateX(5px);
+    background-color: rgb(237, 214, 255);
+  border-color: rgb(237, 214, 255);
+  box-shadow: 0px 5px 20px rgb(237, 214, 255);
+  }
+  .chat-item:hover .isOffline {
+    border-color: rgb(237, 214, 255);
+  }
+  .selected-chat-item {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(0, 221, 147);
+    padding: 5px;
+    border-radius: 10px;
+    /* border: 3px solid rgb(144, 0, 255); */
+    box-shadow: 0px 10px 50px rgb(0, 221, 147);
+    cursor: pointer;
+    transition: transform 0.3s ease-out;
+  }
+  .selected-chat-item:hover{
+    transform: translateX(5px);
+  }
+  .selected-chat-item .isOffline{
+    border-color: rgb(0, 221, 147);
+  }
+  .isOffline {
+    margin-right: 10px;
+    border: 3px solid rgb(49, 255, 186);
+    border-radius: 100%;
+    opacity: 0.9;
+  }
+  .isOnline {
+    margin-right: 10px;
+    border: 3px solid rgb(144, 0, 255);
+    border-radius: 100%;
+  }
+  .chat-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-content h2,
+.chat-content p {
+  margin: 0;
+}
