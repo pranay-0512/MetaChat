@@ -51,7 +51,36 @@ const Dashboard = () => {
           ))}
       </div>
       <div className="middle">
-        Conversation
+      <div className="message-text">
+          {selectedChat ? (
+            <div className="chat-top">
+              <img
+                src={Asset}
+                alt=""
+                width={50}
+                height={50}
+                className={selectedChat.isOnline ? "isOnline" : "isOffline"}
+              />
+              <div className="chat-content">
+                <h2>{selectedChat.name}</h2>
+              </div>
+            </div>
+          ) : (
+            <div className="title">Start a conversation</div>
+          )}
+
+          {selectedChat && (
+            <div className="text-area">
+              {selectedChat.messages.map((message) => {
+                return (
+                  <div className={`text ${message.status}`}>
+                    {message.value}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
         
       </div>
       <div className="right">
