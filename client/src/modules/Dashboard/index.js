@@ -87,7 +87,6 @@ const Dashboard = () => {
             required
             placeholder="Type a message"
             className="typing-field"
-            
           />
           <FontAwesomeIcon
             icon={faPaperPlane}
