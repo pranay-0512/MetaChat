@@ -6,6 +6,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 app.use(cors());
 
+require('./db/connection')
+
+
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 
