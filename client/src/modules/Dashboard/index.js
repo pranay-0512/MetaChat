@@ -3,7 +3,7 @@ import "./style.css";
 import Asset from "../../assets/profile.png";
 import Contacts from "../../assets/contacts.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars} from "@fortawesome/free-solid-svg-icons";
+import { faBars, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
   const [showMessages, setShowMessages] = useState(true);
@@ -81,7 +81,20 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-        
+        <div className="typing-area">
+          <input
+            type="text"
+            required
+            placeholder="Type a message"
+            className="typing-field"
+            
+          />
+          <FontAwesomeIcon
+            icon={faPaperPlane}
+            className="send-button"
+            type="button"
+          />
+        </div>
       </div>
       <div className="right">
         Registered Users:
