@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.css'; // Import the CSS file for Button component
+import './style.css';
 
 const Button = ({
   label = '',
