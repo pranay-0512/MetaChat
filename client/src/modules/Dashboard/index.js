@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import Asset from "../../assets/profile.png";
-import Contacts from "../../assets/contacts.json";
+// import Contacts from "../../assets/contacts.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,8 +16,8 @@ const Dashboard = () => {
 
   //for selecting a chat on the left side
   const [selectedChat, setSelectedChat] = useState(null);
-  const handleViewChat = (contacts) => {
-    setSelectedChat(contacts);
+  const handleViewChat = (user) => {
+    setSelectedChat(user);
   };
 
 
@@ -27,8 +27,8 @@ const Dashboard = () => {
   const sendMessage = async () => {
     try {
       const messageData = {
-        conversationId: "64ab95dd8981d9624065e2d0",
-        senderId: "64aa4dfd3b41da03ef253d3e",
+        conversationId: "64b0f68c86bc99602e267a1b",
+        senderId: "64b0f5da2ba489bad4f926f9",
         message: `${text}`,
       };
       const response = await fetch("http://localhost:8000/api/message", {
@@ -94,7 +94,7 @@ const Dashboard = () => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/message/64ab95dd8981d9624065e2d0"
+          "http://localhost:8000/api/message/64b0f68c86bc99602e267a1b"
         );
         const data = await response.json();
         setMessages(data);
@@ -105,7 +105,7 @@ const Dashboard = () => {
     };
     fetchMessages();
 
-    // Start polling every 10 milliseconds (adjust the interval as needed)
+    // Start polling every 10 milliseconds
     const interval = setInterval(fetchMessages, 10);
     return () => clearInterval(interval);
   }, []);
@@ -123,6 +123,9 @@ const Dashboard = () => {
     }
   }, [messages]);
   
+
+
+  // return JSX
   return (
     <div className="container">
       <div className="left">
@@ -130,31 +133,27 @@ const Dashboard = () => {
           <FontAwesomeIcon icon={faBars} />
         </span>
         {showMessages &&
-          Contacts.map((contacts, index) => (
+          users.map((user) => (
             <div
-              key={index}
               className={
-                selectedChat === contacts ? "selected-chat-item" : "chat-item"
+                selectedChat === user ? "selected-chat-item" : "chat-item"
               }
-              onClick={() => handleViewChat(contacts)}
+              onClick={() => handleViewChat(user)}
             >
               <img
                 src={Asset}
                 alt=""
                 width={50}
                 height={50}
-                className={contacts.isOnline ? "isOnline" : "isOffline"}
+                // className={contacts.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
-                <h2>{contacts.name}</h2>
-                <p>
-                  {contacts.messages[contacts.messages.length - 1].value
-                    .length > 45
-                    ? `${contacts.messages[
-                        contacts.messages.length - 1
-                      ].value.slice(0, 45)}...`
-                    : contacts.messages[contacts.messages.length - 1].value}
-                </p>
+                <h2>{user.user.fullName}</h2>
+                {/* <p>
+                  {user.user.message.length> 45
+                    ? `${user.user.message.slice(0, 45)}...`
+                    : user.user.message}
+                </p> */}
               </div>
             </div>
           ))}

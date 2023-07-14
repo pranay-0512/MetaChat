@@ -55,7 +55,7 @@ app.post('/api/login', async(req,res)=>{
                 res.status(400).send('Email not registered');
             }
             else{
-                const validateUser = await bcrypt.compare(password, user.password);
+                const validateUser = await bcryptjs.compare(password, user.password);
                 if(!validateUser){
                     res.status(400).send('Password does not match');
                 }
@@ -135,7 +135,8 @@ app.get('/api/message/:conversationId', async (req,res)=>{
         const conversationId = req.params.conversationId;
         const messages = await Messages.find({conversationId});
         const messageData = await Promise.all(messages.map(async(text)=>{
-            return {senderId:text.senderId, conversationId:text.conversationId, message:text.message};
+            const sender = await Users.findById(text.senderId);
+            return {sender:{email:sender.email, fullName:sender.fullName}, message:text.message};
         }))
         res.status(200).json(messageData)
     } catch (error) {
