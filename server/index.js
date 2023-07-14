@@ -8,12 +8,16 @@ app.use(cors());
 
 require('./db/connection')
 
+//import files
+const Users = require('./models/Users')
+const Conversations = require('./models/Conversations')
+const Messages = require('./models/Messages')
 
-const bcrypt = require('bcryptjs')
+const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 
 //for signup
-app.post('/api/register', async(req,res)=>{
+app.post('/api/register', async(req,res,next)=>{
     try {
         const {fullName, email, password} = req.body;
         if(!fullName || !email || !password){
@@ -26,8 +30,8 @@ app.post('/api/register', async(req,res)=>{
             }
             else{
                 const newUser = new Users({email, fullName});
-                bcrypt.hash(password, 10, (err, hashedPassword)=>{
-                    newUser.set('password', bcrypt.hashedPassword);
+                bcryptjs.hash(password, 10, (err, hashedPassword)=>{
+                    newUser.set('password', hashedPassword);
                     newUser.save();
                     next();
                 })
@@ -81,7 +85,75 @@ app.post('/api/login', async(req,res)=>{
     }
 })
 
+// conversation id between 2 users
+app.post('/api/conversation', async (req,res)=>{
+    try {
+        const { senderId, receiverId } = req.body;
+        const alreadyExists = await Conversations.findOne({ members: [senderId, receiverId] });
+        if(alreadyExists){
+            res.status(400).send('Conversation already exists');
+        }
+        else{
+            const newConversation = new Conversations({ members: [senderId, receiverId] });
+            await newConversation.save();
+            res.status(200).send('Conversation created successfully')
+        }
+    } catch (error) {
+        console.log(error, "Error")
+    }
+})
 
+app.get('/api/conversation/:userId', async (req,res)=>{
+    try {
+        const userId = req.params.userId;
+        const conversations = await Conversations.find({members: {$in:[userId]}});
+        const conversationUserData =await Promise.all(
+            conversations.map(async (conversation)=>{
+                const receiverId = conversation.members.find((member)=>member!==userId);
+                const user = await Users.findById(receiverId);
+                return {user:{email:user.email, fullName:user.fullName}, conversationId:conversation._id}
+            })) 
+        res.status(200).json(conversationUserData);
+    } catch (error) {
+        console.log(error, "error")
+    }
+})
+
+app.post('/api/message', async (req,res)=>{
+    try {
+        const {conversationId, senderId, message} = req.body;
+        const newMessage = new Messages({conversationId, senderId, message});
+        await newMessage.save();
+        res.status(200).send('Message sent successfully');
+    } catch (error) {
+        console.log('error: ', error)
+    }
+})
+
+app.get('/api/message/:conversationId', async (req,res)=>{
+    try {
+        const conversationId = req.params.conversationId;
+        const messages = await Messages.find({conversationId});
+        const messageData = await Promise.all(messages.map(async(text)=>{
+            return {senderId:text.senderId, conversationId:text.conversationId, message:text.message};
+        }))
+        res.status(200).json(messageData)
+    } catch (error) {
+        console.log('error', error)
+    }
+})
+
+app.get('/api/users', async(req,res)=>{
+    try {
+        const users = await Users.find();
+        const userName = await Promise.all(users.map(async(user)=>{
+            return {user: {fullName:user.fullName}, userId:user._id}
+        }))
+        res.status(200).json(userName);
+    } catch (error) {
+        console.log('error', error)
+    }
+})
 
 app.listen(PORT, ()=>{
     console.log('Running on PORT:',PORT)
