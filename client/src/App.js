@@ -9,8 +9,8 @@ function App() {
   };
   return (
     <>
-      {/* <Dashboard/> */}
-      <Form isLoginPage={isLoginPage} toggleForm={toggleForm}/>
+      <Dashboard/>
+      {/* <Form isLoginPage={isLoginPage} toggleForm={toggleForm}/> */}
     </>
   );
 }
