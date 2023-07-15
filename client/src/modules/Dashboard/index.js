@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import "./style.css";
 import Asset from "../../assets/profile.png";
 // import Contacts from "../../assets/contacts.json";
@@ -23,12 +23,13 @@ const Dashboard = () => {
 
   
   //for sending messages
+  const loggedId = '64b0f5ce2ba489bad4f926e8';
   const [text, setText] = useState("");
   const sendMessage = async () => {
     try {
       const messageData = {
-        conversationId: "64b0f68c86bc99602e267a1b",
-        senderId: "64b0f5da2ba489bad4f926f9",
+        conversationId: "64b0f68c86bc99602e267a1b", // conversationId between pranay and rajat
+        senderId: "64b0f5da2ba489bad4f926f9", // sender is Rajat
         message: `${text}`,
       };
       const response = await fetch("http://localhost:8000/api/message", {
@@ -51,11 +52,9 @@ const Dashboard = () => {
     }
     finally {
       setText('');
-    }
-   
+    }  
   };
   const handleMessageChange = (event) => {
-    console.log("text: ", text);
     setText(event.target.value);
   };
 
@@ -78,7 +77,6 @@ const Dashboard = () => {
         const response = await fetch("http://localhost:8000/api/users");
         const data = await response.json();
         setUsers(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -98,7 +96,6 @@ const Dashboard = () => {
         );
         const data = await response.json();
         setMessages(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -106,23 +103,32 @@ const Dashboard = () => {
     fetchMessages();
 
     // Start polling every 10 milliseconds
-    const interval = setInterval(fetchMessages, 10);
+    const interval = setInterval(fetchMessages, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  const startConversation =async(receiverId)=>{
+    try {
+      const  senderId = loggedId;
 
-  //only for determining id sent or received  
-  const senderIdArray = messages.map((message) => message.senderId);
-
-
-// for scrolling to the bottom when new message is sent
-  const chatContainerRef = useRef(null);
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      const response = await fetch('http://localhost:8000/api/conversation',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({senderId, receiverId})
+      });
+      if(response.ok){
+        const conversationId = await response.text();
+        console.log('Conversation created successfully');
+        console.log(conversationId)// I HAVE LEFT HERE
+      }else{
+        console.log('error ', response.status)
+      }
+    } catch (error) {
+      console.log('error ', error )
     }
-  }, [messages]);
-  
+  }
 
 
   // return JSX
@@ -200,18 +206,18 @@ const Dashboard = () => {
                 className={selectedChat.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
-                <h2>{selectedChat.name}</h2>
+                <h2>{selectedChat.fullName}</h2>
               </div>
             </div>
           ) : (
             <div className="title">Start a conversation</div>
           )}
           {selectedChat && (
-            <div className="text-area" ref={chatContainerRef}>
+            <div className="text-area">
               {messages.map((message) => (
                 <div
                   className={
-                    senderIdArray[0] === message.senderId ? "sent" : "received"
+                    loggedId === message.senderId ? "sent" : "received"
                   }
                 >
                   {message.message}
@@ -241,7 +247,7 @@ const Dashboard = () => {
       <div className="right">
         Registered Users:
         {users.map((user) => (
-          <div className="chat-item">{user.user.fullName}</div>
+          <div className="chat-item" onClick={()=>startConversation(user.user.senderId)}>{user.user.fullName}</div>
         ))}
       </div>
     </div>
