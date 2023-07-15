@@ -23,7 +23,7 @@ const Dashboard = () => {
 
   
   //for sending messages
-  const loggedId = '64b0f5ce2ba489bad4f926e8';
+  const loggedId = '64b0f5ce2ba489bad4f926e8'; // pranay userId
   const [text, setText] = useState("");
   const sendMessage = async () => {
     try {
@@ -41,7 +41,6 @@ const Dashboard = () => {
       });
       if (response.ok) {
         console.log("Message sent successfully");
-        
       } else {
         console.log("error", response.status);
       }
@@ -89,10 +88,10 @@ const Dashboard = () => {
   //for fetching messages 
   const [messages, setMessages] = useState([]);
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchMessages = async (conversationId) => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/message/64b0f68c86bc99602e267a1b"
+          `http://localhost:8000/api/message/${conversationId}`
         );
         const data = await response.json();
         setMessages(data);
@@ -103,10 +102,16 @@ const Dashboard = () => {
     fetchMessages();
 
     // Start polling every 10 milliseconds
-    const interval = setInterval(fetchMessages, 1000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchMessages, 1000);
+    // return () => clearInterval(interval);
   }, []);
 
+
+
+
+
+
+  // for starting a conversation between 2 registered users
   const startConversation =async(receiverId)=>{
     try {
       const  senderId = loggedId;
@@ -119,16 +124,37 @@ const Dashboard = () => {
         body:JSON.stringify({senderId, receiverId})
       });
       if(response.ok){
-        const conversationId = await response.text();
         console.log('Conversation created successfully');
-        console.log(conversationId)// I HAVE LEFT HERE
+        alert("New conversation created")
       }else{
-        console.log('error ', response.status)
+        console.log('Conversation already exists! ', response.status)
+        alert("Conversation already exists!")
       }
+
     } catch (error) {
       console.log('error ', error )
     }
   }
+
+
+
+  // only showing the existing conversation on the left div instead of all the registered users.
+  const [existingConvo, setExistingConvo] = useState([]);
+  useEffect(() => {
+    const fetchExistingConversation = async ()=>{
+      try {
+        const response = await fetch(`http://localhost:8000/api/conversation/${loggedId}`);
+        const data = await response.json();
+        setExistingConvo(data);
+      } catch (error) {
+        console.log('error ', error )
+      }
+    }
+    fetchExistingConversation();
+  }, [])
+  
+  
+
 
 
   // return JSX
@@ -139,7 +165,7 @@ const Dashboard = () => {
           <FontAwesomeIcon icon={faBars} />
         </span>
         {showMessages &&
-          users.map((user) => (
+          existingConvo.map((user) => (
             <div
               className={
                 selectedChat === user ? "selected-chat-item" : "chat-item"
@@ -195,6 +221,7 @@ const Dashboard = () => {
             </div>
           )}
         </div> */}
+        
         <div className="message-text">
           {selectedChat ? (
             <div className="chat-top">
@@ -206,7 +233,7 @@ const Dashboard = () => {
                 className={selectedChat.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
-                <h2>{selectedChat.fullName}</h2>
+                <h2>{selectedChat.user.fullName}</h2>
               </div>
             </div>
           ) : (
@@ -247,7 +274,7 @@ const Dashboard = () => {
       <div className="right">
         Registered Users:
         {users.map((user) => (
-          <div className="chat-item" onClick={()=>startConversation(user.user.senderId)}>{user.user.fullName}</div>
+          <div className="chat-item" onClick={()=>startConversation(user.userId)}>{user.user.fullName}</div>
         ))}
       </div>
     </div>
