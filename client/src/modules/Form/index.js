@@ -25,7 +25,7 @@ const Form = ({ isLoginPage, toggleForm }) => {
         className='form-input'
         placeholder='Email'
         isRequired={true}
-        name='username'
+        name='email'
       />
       <Input
         type='password'
@@ -33,7 +33,7 @@ const Form = ({ isLoginPage, toggleForm }) => {
         className='form-input'
         placeholder={isLoginPage ? `Enter the Password` : `Enter your Password`}
         isRequired={true}
-        name='username'
+        name='password'
       />
       <Button label={isLoginPage ? 'Login' : 'Sign up' } className='form-button'/>
       {!isLoginPage ? <div className='form-footer'>

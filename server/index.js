@@ -86,22 +86,28 @@ app.post('/api/login', async(req,res)=>{
 })
 
 // conversation id between 2 users
-app.post('/api/conversation', async (req,res)=>{
+app.post('/api/conversation', async (req, res) => {
     try {
-        const { senderId, receiverId } = req.body;
-        const alreadyExists = await Conversations.findOne({ members: [senderId, receiverId] });
-        if(alreadyExists){
-            res.status(400).send('Conversation already exists');
-        }
-        else{
-            const newConversation = new Conversations({ members: [senderId, receiverId] });
-            await newConversation.save();
-            res.status(200).send('Conversation created successfully')
-        }
+      const { senderId, receiverId } = req.body;
+      const conversation = await Conversations.findOne({
+        $or: [
+          { members: [senderId, receiverId] },
+          { members: [receiverId, senderId] },
+        ],
+      });
+  
+      if (conversation) {
+        res.status(400).send('Conversation already exists');
+      } else {
+        const newConversation = new Conversations({ members: [senderId, receiverId] });
+        await newConversation.save();
+        res.status(200).send('Conversation created successfully');
+      }
     } catch (error) {
-        console.log(error, "Error")
+      console.log(error, "Error");
+      res.status(500).send('Server error');
     }
-})
+  });
 
 app.get('/api/conversation/:userId', async (req,res)=>{
     try {
@@ -153,6 +159,16 @@ app.get('/api/users', async(req,res)=>{
         res.status(200).json(userName);
     } catch (error) {
         console.log('error', error)
+    }
+})
+
+app.get('/api/users/:userId', async (req,res)=>{
+    try {
+        const userId = req.params.userId;
+        const user = await Users.findById(userId)
+        res.status(200).json(user);
+    } catch (error) {
+        console.log('error ', error )
     }
 })
 

@@ -11,25 +11,45 @@ const Dashboard = () => {
   const toggleMessages = () => {
     setShowMessages(!showMessages);
   };
-
-
-
   //for selecting a chat on the left side
   const [selectedChat, setSelectedChat] = useState(null);
-  const handleViewChat = (user) => {
+  //for selecting user and fetching the messages
+  const handleViewChat = async (user) => {
     setSelectedChat(user);
-  };
-
-
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/message/${user.conversationId}`
+        );
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+ 
+  // for getting login details
+  const [loggedUser, setLoggedUser] = useState('');
+  const loggedId = '64b0f5ce2ba489bad4f926e8'; 
+  useEffect(() => {
+    const fetchLoggedUser = async ()=>{
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/${loggedId}`);
+        const data = await response.json();
+        setLoggedUser(data)
+      } catch (error) {
+        console.log('error ', error )
+      }
+    }
+    fetchLoggedUser();
+  }, [])
   
-  //for sending messages
-  const loggedId = '64b0f5ce2ba489bad4f926e8'; // pranay userId
+   //for sending messages
   const [text, setText] = useState("");
   const sendMessage = async () => {
     try {
       const messageData = {
-        conversationId: "64b0f68c86bc99602e267a1b", // conversationId between pranay and rajat
-        senderId: "64b0f5da2ba489bad4f926f9", // sender is Rajat
+        conversationId: selectedChat.conversationId, // conversationId between pranay and rajat
+        senderId: loggedId,
         message: `${text}`,
       };
       const response = await fetch("http://localhost:8000/api/message", {
@@ -43,9 +63,7 @@ const Dashboard = () => {
         console.log("Message sent successfully");
       } else {
         console.log("error", response.status);
-      }
-      
-      
+      }    
     } catch (error) {
       console.log("error ", error);
     }
@@ -56,8 +74,6 @@ const Dashboard = () => {
   const handleMessageChange = (event) => {
     setText(event.target.value);
   };
-
-
   // enter key -> sendMessage
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -65,9 +81,6 @@ const Dashboard = () => {
       sendMessage();
     }
   };
-
-
-
 //for fetching users
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -82,9 +95,6 @@ const Dashboard = () => {
     };
     fetchUsers();
   }, []);
-
-
-
   //for fetching messages 
   const [messages, setMessages] = useState([]);
   useEffect(() => {
@@ -99,23 +109,21 @@ const Dashboard = () => {
         console.error("Error fetching data:", error);
       }
     };
-    fetchMessages();
-
-    // Start polling every 10 milliseconds
-    // const interval = setInterval(fetchMessages, 1000);
-    // return () => clearInterval(interval);
-  }, []);
-
-
-
-
-
-
+    // Fetch messages initially
+    fetchMessages(selectedChat?.conversationId);
+    // Start polling every 1 second
+    const interval = setInterval(() => {
+      if (selectedChat) {
+        fetchMessages(selectedChat.conversationId);
+      }
+    }, 1000);
+    // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
+  }, [selectedChat]);
   // for starting a conversation between 2 registered users
   const startConversation =async(receiverId)=>{
     try {
       const  senderId = loggedId;
-
       const response = await fetch('http://localhost:8000/api/conversation',{
         method:'POST',
         headers:{
@@ -135,9 +143,6 @@ const Dashboard = () => {
       console.log('error ', error )
     }
   }
-
-
-
   // only showing the existing conversation on the left div instead of all the registered users.
   const [existingConvo, setExistingConvo] = useState([]);
   useEffect(() => {
@@ -151,12 +156,7 @@ const Dashboard = () => {
       }
     }
     fetchExistingConversation();
-  }, [])
-  
-  
-
-
-
+  }, []) 
   // return JSX
   return (
     <div className="container">
@@ -180,7 +180,7 @@ const Dashboard = () => {
                 // className={contacts.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
-                <h2>{user.user.fullName}</h2>
+                <h2 id={user.conversationId}>{user.user.fullName}</h2>
                 {/* <p>
                   {user.user.message.length> 45
                     ? `${user.user.message.slice(0, 45)}...`
@@ -191,37 +191,6 @@ const Dashboard = () => {
           ))}
       </div>
       <div className="middle">
-        {/* <div className="message-text">
-          {selectedChat ? (
-            <div className="chat-top">
-              <img
-                src={Asset}
-                alt=""
-                width={50}
-                height={50}
-                className={selectedChat.isOnline ? "isOnline" : "isOffline"}
-              />
-              <div className="chat-content">
-                <h2>{selectedChat.name}</h2>
-              </div>
-            </div>
-          ) : (
-            <div className="title">Start a conversation</div>
-          )}
-
-          {selectedChat && (
-            <div className="text-area">
-              {selectedChat.messages.map((message) => {
-                return (
-                  <div className={`text ${message.status}`}>
-                    {message.value}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div> */}
-        
         <div className="message-text">
           {selectedChat ? (
             <div className="chat-top">
@@ -237,7 +206,7 @@ const Dashboard = () => {
               </div>
             </div>
           ) : (
-            <div className="title">Start a conversation</div>
+            <div className="title">Hello {loggedUser.fullName}, start a conversation</div>
           )}
           {selectedChat && (
             <div className="text-area">
@@ -253,7 +222,7 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-        <div className="typing-area">
+        {selectedChat&&<div className="typing-area">
           <input
             type="text"
             required
@@ -269,7 +238,7 @@ const Dashboard = () => {
             type="button"
             onClick={sendMessage}
           />
-        </div>
+        </div>}
       </div>
       <div className="right">
         Registered Users:
