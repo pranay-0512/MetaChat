@@ -88,7 +88,8 @@ const Dashboard = () => {
       try {
         const response = await fetch("http://localhost:8000/api/users");
         const data = await response.json();
-        setUsers(data);
+        const filteredUsers = data.filter(user => user.userId !== loggedId);
+        setUsers(filteredUsers);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
