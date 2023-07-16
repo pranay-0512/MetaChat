@@ -29,7 +29,7 @@ const Dashboard = () => {
  
   // for getting login details
   const [loggedUser, setLoggedUser] = useState('');
-  const loggedId = '64b0f5ce2ba489bad4f926e8'; 
+  const loggedId = '64b386224aa9cc4b4d323712'; 
   useEffect(() => {
     const fetchLoggedUser = async ()=>{
       try {
@@ -117,7 +117,7 @@ const Dashboard = () => {
       if (selectedChat) {
         fetchMessages(selectedChat.conversationId);
       }
-    }, 1000);
+    }, 500);
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [selectedChat]);
@@ -134,10 +134,13 @@ const Dashboard = () => {
       });
       if(response.ok){
         console.log('Conversation created successfully');
-        alert("New conversation created")
+        // alert("New conversation created");
+        fetchExistingConversation();
+        const receiverUser = users.find((user) => user.userId === receiverId);
+        setSelectedChat(receiverUser);
       }else{
         console.log('Conversation already exists! ', response.status)
-        alert("Conversation already exists!")
+        // alert("Conversation already exists!")
       }
 
     } catch (error) {
@@ -146,16 +149,16 @@ const Dashboard = () => {
   }
   // only showing the existing conversation on the left div instead of all the registered users.
   const [existingConvo, setExistingConvo] = useState([]);
-  useEffect(() => {
-    const fetchExistingConversation = async ()=>{
-      try {
-        const response = await fetch(`http://localhost:8000/api/conversation/${loggedId}`);
-        const data = await response.json();
-        setExistingConvo(data);
-      } catch (error) {
-        console.log('error ', error )
-      }
+  const fetchExistingConversation = async ()=>{
+    try {
+      const response = await fetch(`http://localhost:8000/api/conversation/${loggedId}`);
+      const data = await response.json();
+      setExistingConvo(data);
+    } catch (error) {
+      console.log('error ', error )
     }
+  }
+  useEffect(() => {
     fetchExistingConversation();
   }, []) 
   // return JSX
