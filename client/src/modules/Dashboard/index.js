@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import "./style.css";
 import Asset from "../../assets/profile.png";
 // import Contacts from "../../assets/contacts.json";
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
+  
   // for the toggle button
   const [showMessages, setShowMessages] = useState(true);
   const toggleMessages = () => {
@@ -29,7 +30,10 @@ const Dashboard = () => {
  
   // for getting login details
   const [loggedUser, setLoggedUser] = useState('');
-  const loggedId = '64b386224aa9cc4b4d323712'; 
+  // const loggedId = '64b383a24aa9cc4b4d3236f7'; 
+  // const loggedId = '64b386224aa9cc4b4d323712'; 
+  const loggedId = '64b392e64aa9cc4b4d334a6a'; 
+
   useEffect(() => {
     const fetchLoggedUser = async ()=>{
       try {
@@ -117,7 +121,7 @@ const Dashboard = () => {
       if (selectedChat) {
         fetchMessages(selectedChat.conversationId);
       }
-    }, 500);
+    }, 1000);
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [selectedChat]);
@@ -161,6 +165,14 @@ const Dashboard = () => {
   useEffect(() => {
     fetchExistingConversation();
   }, []) 
+  // for bottom scrolling
+  const chatContainerRef = useRef(null);
+  useEffect(() => {
+    // Scroll to the bottom of the chat container whenever new messages are added
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
   // return JSX
   return (
     <div className="container">
@@ -213,7 +225,7 @@ const Dashboard = () => {
             <div className="title">Hello {loggedUser.fullName}, start a conversation</div>
           )}
           {selectedChat && (
-            <div className="text-area">
+            <div className="text-area" ref={chatContainerRef}>
               {messages.map((message) => (
                 <div
                   className={

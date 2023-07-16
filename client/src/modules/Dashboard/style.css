@@ -149,6 +149,7 @@
 }
 .sent:hover{
   transform: translate(-5px, -2px);
+  cursor:pointer;
 
 }
 .received {
@@ -167,6 +168,7 @@
 }
 .received:hover{
   transform: translate(5px, -2px);
+  cursor:pointer;
 }
 
 
