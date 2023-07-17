@@ -2,9 +2,11 @@ import React from "react";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import "./style.css";
-import {Link} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
+    const navigate = useNavigate();
+
   // Login
   return (
     <div className="form-container">
@@ -28,7 +30,7 @@ const LogIn = () => {
       />
       <Button label="Login" className="form-button" />
       <div className="form-footer">
-        New here? <Link to='/login'>Sign up</Link>
+        New here? <span onClick={()=>navigate('/signup')}>Sign up</span>
       </div>
     </div>
   );
