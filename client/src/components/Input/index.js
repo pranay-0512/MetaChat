@@ -7,17 +7,23 @@ const Input = ({
   type = 'text',
   isRequired = false,
   placeholder = '',
+  value='',
+  className='',
+  onChange = ()=>{}
 }) => {
   return (
-    <div className='input-container'>
+    <div className={`input-container ${className}`}>
       <label htmlFor={name} className='input-label'>
         {label}
       </label>
       <input
+        id={name}
         type={type}
         required={isRequired}
         placeholder={placeholder}
         className='input-field'
+        value={value}
+        onChange={onChange}
       />
     </div>
   );

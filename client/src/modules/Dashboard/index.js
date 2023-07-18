@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import Asset from "../../assets/profile.png";
-// import Contacts from "../../assets/contacts.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = () => {
-  
   // for the toggle button
   const [showMessages, setShowMessages] = useState(true);
   const toggleMessages = () => {
@@ -14,45 +12,32 @@ const Dashboard = () => {
   };
   //for selecting a chat on the left side
   const [selectedChat, setSelectedChat] = useState(null);
-  //for selecting user and fetching the messages
+  //for selecting user and fetching the messages associated with loggedUser and selected user
   const handleViewChat = async (user) => {
     setSelectedChat(user);
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/message/${user.conversationId}`
-        );
-        const data = await response.json();
-        setMessages(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
- 
-  // for getting login details
-  const [loggedUser, setLoggedUser] = useState('');
-  // const loggedId = '64b383a24aa9cc4b4d3236f7'; 
-  // const loggedId = '64b386224aa9cc4b4d323712'; 
-  const loggedId = '64b392e64aa9cc4b4d334a6a'; 
-
-  useEffect(() => {
-    const fetchLoggedUser = async ()=>{
-      try {
-        const response = await fetch(`http://localhost:8000/api/users/${loggedId}`);
-        const data = await response.json();
-        setLoggedUser(data)
-      } catch (error) {
-        console.log('error ', error )
-      }
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/message/${user.conversationId}`
+      );
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    fetchLoggedUser();
-  }, [])
+  };
+
+  // for getting logged in user details
   
-   //for sending messages
+  const loggedUserDataJson = JSON.parse(localStorage.getItem("user:detail"));
+  const loggedId = loggedUserDataJson.id;
+  
+
+  //for sending messages
   const [text, setText] = useState("");
   const sendMessage = async () => {
     try {
       const messageData = {
-        conversationId: selectedChat.conversationId, // conversationId between pranay and rajat
+        conversationId: selectedChat.conversationId,
         senderId: loggedId,
         message: `${text}`,
       };
@@ -63,17 +48,14 @@ const Dashboard = () => {
         },
         body: JSON.stringify(messageData),
       });
-      if (response.ok) {
-        console.log("Message sent successfully");
-      } else {
-        console.log("error", response.status);
-      }    
+      if (!response.ok) {
+        console.log("Error sending message", response.status);
+      }
     } catch (error) {
       console.log("error ", error);
+    } finally {
+      setText("");
     }
-    finally {
-      setText('');
-    }  
   };
   const handleMessageChange = (event) => {
     setText(event.target.value);
@@ -85,35 +67,21 @@ const Dashboard = () => {
       sendMessage();
     }
   };
-//for fetching users
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/api/users");
-        const data = await response.json();
-        const filteredUsers = data.filter(user => user.userId !== loggedId);
-        setUsers(filteredUsers);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchUsers();
-  }, []);
-  //for fetching messages 
+
+  //for fetching messages for a specific conversation
   const [messages, setMessages] = useState([]);
+  const fetchMessages = async (conversationId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/message/${conversationId}`
+      );
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
-    const fetchMessages = async (conversationId) => {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/message/${conversationId}`
-        );
-        const data = await response.json();
-        setMessages(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     // Fetch messages initially
     fetchMessages(selectedChat?.conversationId);
     // Start polling every 1 second
@@ -125,54 +93,76 @@ const Dashboard = () => {
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [selectedChat]);
-  // for starting a conversation between 2 registered users
-  const startConversation =async(receiverId)=>{
+
+  //for fetching users for the right div
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/users");
+        const data = await response.json();
+        const filteredUsers = data.filter((user) => user.userId !== loggedId); // filtering out the logged user, to prevent app crash
+        setUsers(filteredUsers);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchUsers();
+  }, [loggedId,users]);
+
+  // for setting up a conversation between 2 registered users
+  const startConversation = async (receiverId) => {
     try {
-      const  senderId = loggedId;
-      const response = await fetch('http://localhost:8000/api/conversation',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json'
+      const senderId = loggedId;
+      const response = await fetch("http://localhost:8000/api/conversation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({senderId, receiverId})
+        body: JSON.stringify({ senderId, receiverId }),
       });
-      if(response.ok){
-        console.log('Conversation created successfully');
-        // alert("New conversation created");
+      if (response.ok) {
         fetchExistingConversation();
         const receiverUser = users.find((user) => user.userId === receiverId);
         setSelectedChat(receiverUser);
-      }else{
-        console.log('Conversation already exists! ', response.status)
-        // alert("Conversation already exists!")
+        const conversationId = receiverUser.conversationId
+        console.log(conversationId, "Conversation id created")
+        fetchMessages(conversationId);
+      } else {
+        console.log("Conversation already exists! ");
       }
-
     } catch (error) {
-      console.log('error ', error )
+      console.log("error ", error);
     }
-  }
-  // only showing the existing conversation on the left div instead of all the registered users.
+  };
+
+  // only showing the existing conversation on the left div
   const [existingConvo, setExistingConvo] = useState([]);
-  const fetchExistingConversation = async ()=>{
+  const fetchExistingConversation = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/conversation/${loggedId}`);
+      const response = await fetch(
+        `http://localhost:8000/api/conversation/${loggedId}`
+      );
       const data = await response.json();
       setExistingConvo(data);
     } catch (error) {
-      console.log('error ', error )
+      console.log("error ", error);
     }
-  }
+  };
   useEffect(() => {
     fetchExistingConversation();
-  }, []) 
-  // for bottom scrolling
+  }, [users]);
+
+  // for to-bottom scrolling
   const chatContainerRef = useRef(null);
   useEffect(() => {
     // Scroll to the bottom of the chat container whenever new messages are added
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
   // return JSX
   return (
     <div className="container">
@@ -207,6 +197,7 @@ const Dashboard = () => {
           ))}
       </div>
       <div className="middle">
+      <div className="">Logged In as: <b>{loggedUserDataJson.fullName}</b></div>
         <div className="message-text">
           {selectedChat ? (
             <div className="chat-top">
@@ -222,7 +213,9 @@ const Dashboard = () => {
               </div>
             </div>
           ) : (
-            <div className="title">Hello {loggedUser.fullName}, start a conversation</div>
+            <div className="title">
+              Hello {loggedUserDataJson.fullName}, start a conversation
+            </div>
           )}
           {selectedChat && (
             <div className="text-area" ref={chatContainerRef}>
@@ -238,28 +231,35 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-        {selectedChat&&<div className="typing-area">
-          <input
-            type="text"
-            required
-            placeholder="Type a message"
-            className="typing-field"
-            onChange={handleMessageChange}
-            value={text}
-            onKeyPress={handleKeyPress}
-          />
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="send-button"
-            type="button"
-            onClick={sendMessage}
-          />
-        </div>}
+        {selectedChat && (
+          <div className="typing-area">
+            <input
+              type="text"
+              required
+              placeholder="Type a message"
+              className="typing-field"
+              onChange={handleMessageChange}
+              value={text}
+              onKeyPress={handleKeyPress}
+            />
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="send-button"
+              type="button"
+              onClick={sendMessage}
+            />
+          </div>
+        )}
       </div>
       <div className="right">
         Registered Users:
         {users.map((user) => (
-          <div className="chat-item" onClick={()=>startConversation(user.userId)}>{user.user.fullName}</div>
+          <div
+            className="chat-item"
+            onClick={() => startConversation(user.userId)}
+          >
+            {user.user.fullName}
+          </div>
         ))}
       </div>
     </div>
