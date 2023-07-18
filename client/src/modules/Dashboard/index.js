@@ -34,7 +34,6 @@ const Dashboard = () => {
   };
 
   // for getting logged in user details
-  
   const loggedUserDataJson = JSON.parse(localStorage.getItem("user:detail"));
   const loggedId = loggedUserDataJson.id;
   
@@ -133,7 +132,7 @@ const Dashboard = () => {
         const receiverUser = users.find((user) => user.userId === receiverId);
         setSelectedChat(receiverUser);
         const conversationId = receiverUser.conversationId
-        console.log(conversationId, "Conversation id created")
+        // console.log(conversationId, "Conversation id created")
         fetchMessages(conversationId);
       } else {
         console.log("Conversation already exists! ");
@@ -158,6 +157,7 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchExistingConversation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
 
   // for to-bottom scrolling
@@ -188,7 +188,9 @@ const Dashboard = () => {
           existingConvo.map((user) => (
             <div
               className={
-                selectedChat === user ? "selected-chat-item" : "chat-item"
+                selectedChat && selectedChat.conversationId === user.conversationId
+          ? "selected-chat-item"
+          : "chat-item"
               }
               onClick={() => handleViewChat(user)}
             >
