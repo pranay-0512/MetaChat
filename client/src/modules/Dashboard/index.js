@@ -14,9 +14,9 @@ const Dashboard = () => {
     setShowMessages(!showMessages);
   };
   const [showUsers, setShowUsers] = useState(true);
-  const toggleUsers = ()=>{
+  const toggleUsers = () => {
     setShowUsers(!showUsers);
-  }
+  };
   //for selecting a chat on the left side
   const [selectedChat, setSelectedChat] = useState(null);
   //for selecting user and fetching the messages associated with loggedUser and selected user
@@ -36,7 +36,6 @@ const Dashboard = () => {
   // for getting logged in user details
   const loggedUserDataJson = JSON.parse(localStorage.getItem("user:detail"));
   const loggedId = loggedUserDataJson.id;
-  
 
   //for sending messages
   const [text, setText] = useState("");
@@ -114,24 +113,27 @@ const Dashboard = () => {
       }
     };
     fetchUsers();
-  }, [loggedId,users]);
+  }, [loggedId, users]);
 
   // for setting up a conversation between 2 registered users
   const startConversation = async (receiverId) => {
     try {
       const senderId = loggedId;
-      const response = await fetch("http://192.168.0.212:8000/api/conversation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ senderId, receiverId }),
-      });
+      const response = await fetch(
+        "http://192.168.0.212:8000/api/conversation",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ senderId, receiverId }),
+        }
+      );
       if (response.ok) {
         fetchExistingConversation();
         const receiverUser = users.find((user) => user.userId === receiverId);
         setSelectedChat(receiverUser);
-        const conversationId = receiverUser.conversationId
+        const conversationId = receiverUser.conversationId;
         // console.log(conversationId, "Conversation id created")
         fetchMessages(conversationId);
       } else {
@@ -157,7 +159,7 @@ const Dashboard = () => {
   };
   useEffect(() => {
     fetchExistingConversation();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
 
   // for to-bottom scrolling
@@ -170,13 +172,12 @@ const Dashboard = () => {
     }
   }, [messages]);
 
-
-  
   const handleUserLogout = () => {
-    localStorage.removeItem('user:token');
-    navigate("/login")
-    console.log('Button clicked!');
+    localStorage.removeItem("user:token");
+    navigate("/login");
+    console.log("Button clicked!");
   };
+
   // return JSX
   return (
     <div className="container">
@@ -188,9 +189,10 @@ const Dashboard = () => {
           existingConvo.map((user) => (
             <div
               className={
-                selectedChat && selectedChat.conversationId === user.conversationId
-          ? "selected-chat-item"
-          : "chat-item"
+                selectedChat &&
+                selectedChat.conversationId === user.conversationId
+                  ? "selected-chat-item"
+                  : "chat-item"
               }
               onClick={() => handleViewChat(user)}
             >
@@ -199,21 +201,18 @@ const Dashboard = () => {
                 alt=""
                 width={50}
                 height={50}
-                // className={contacts.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
                 <h2 id={user.conversationId}>{user.user.fullName}</h2>
-                {/* <p>
-                  {user.user.message.length> 45
-                    ? `${user.user.message.slice(0, 45)}...`
-                    : user.user.message}
-                </p> */}
               </div>
             </div>
           ))}
       </div>
       <div className="middle">
-      <div className="">Logged In as: <b>{loggedUserDataJson.fullName}</b></div>
+        <div className="user-info">
+          <b>{loggedUserDataJson.fullName}</b>
+          <Button label="Log out" onclick={handleUserLogout} />
+        </div>
         <div className="message-text">
           {selectedChat ? (
             <div className="chat-top">
@@ -222,7 +221,6 @@ const Dashboard = () => {
                 alt=""
                 width={50}
                 height={50}
-                className={selectedChat.isOnline ? "isOnline" : "isOffline"}
               />
               <div className="chat-content">
                 <h2>{selectedChat.user.fullName}</h2>
@@ -230,7 +228,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="title">
-              Hello {loggedUserDataJson.fullName}, start a conversation
+              Hello {loggedUserDataJson.fullName}, start a conversation!
             </div>
           )}
           {selectedChat && (
@@ -268,21 +266,18 @@ const Dashboard = () => {
         )}
       </div>
       <div className="right">
-      <span className="toggle-icon" onClick={toggleUsers}>
+        <span className="toggle-icon" onClick={toggleUsers}>
           <FontAwesomeIcon icon={faBars} />
-          </span>
-        {showUsers &&  users.map((user) => (
-          <div
-            className="chat-item"
-            onClick={() => startConversation(user.userId)}
-          >
-            {user.user.fullName}
-          </div>
-        ))}
-        
-        {/* <Button onClick={(e)=>handleLogOut(e)} label="Log out" name="logout">LogOut</Button> */}
-        <Button label="Log out" onclick={handleUserLogout} />
-        
+        </span>
+        {showUsers &&
+          users.map((user) => (
+            <div
+              className="chat-item"
+              onClick={() => startConversation(user.userId)}
+            >
+              {user.user.fullName}
+            </div>
+          ))}
       </div>
     </div>
   );
