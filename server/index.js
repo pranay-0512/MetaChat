@@ -188,6 +188,6 @@ app.get("/api/users/:userId", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0', () => {
   console.log("Running on PORT:", PORT);
 });

@@ -3,13 +3,20 @@ import "./style.css";
 import Asset from "../../assets/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // for the toggle button
   const [showMessages, setShowMessages] = useState(true);
   const toggleMessages = () => {
     setShowMessages(!showMessages);
   };
+  const [showUsers, setShowUsers] = useState(true);
+  const toggleUsers = ()=>{
+    setShowUsers(!showUsers);
+  }
   //for selecting a chat on the left side
   const [selectedChat, setSelectedChat] = useState(null);
   //for selecting user and fetching the messages associated with loggedUser and selected user
@@ -17,7 +24,7 @@ const Dashboard = () => {
     setSelectedChat(user);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/message/${user.conversationId}`
+        `http://192.168.0.212:8000/api/message/${user.conversationId}`
       );
       const data = await response.json();
       setMessages(data);
@@ -41,7 +48,7 @@ const Dashboard = () => {
         senderId: loggedId,
         message: `${text}`,
       };
-      const response = await fetch("http://localhost:8000/api/message", {
+      const response = await fetch("http://192.168.0.212:8000/api/message", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -73,7 +80,7 @@ const Dashboard = () => {
   const fetchMessages = async (conversationId) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/message/${conversationId}`
+        `http://192.168.0.212:8000/api/message/${conversationId}`
       );
       const data = await response.json();
       setMessages(data);
@@ -99,7 +106,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/users");
+        const response = await fetch("http://192.168.0.212:8000/api/users");
         const data = await response.json();
         const filteredUsers = data.filter((user) => user.userId !== loggedId); // filtering out the logged user, to prevent app crash
         setUsers(filteredUsers);
@@ -114,7 +121,7 @@ const Dashboard = () => {
   const startConversation = async (receiverId) => {
     try {
       const senderId = loggedId;
-      const response = await fetch("http://localhost:8000/api/conversation", {
+      const response = await fetch("http://192.168.0.212:8000/api/conversation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +148,7 @@ const Dashboard = () => {
   const fetchExistingConversation = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/conversation/${loggedId}`
+        `http://192.168.0.212:8000/api/conversation/${loggedId}`
       );
       const data = await response.json();
       setExistingConvo(data);
@@ -163,6 +170,13 @@ const Dashboard = () => {
     }
   }, [messages]);
 
+
+  
+  const handleUserLogout = () => {
+    localStorage.removeItem('user:token');
+    navigate("/login")
+    console.log('Button clicked!');
+  };
   // return JSX
   return (
     <div className="container">
@@ -252,8 +266,10 @@ const Dashboard = () => {
         )}
       </div>
       <div className="right">
-        Registered Users:
-        {users.map((user) => (
+      <span className="toggle-icon" onClick={toggleUsers}>
+          <FontAwesomeIcon icon={faBars} />
+          </span>
+        {showUsers &&  users.map((user) => (
           <div
             className="chat-item"
             onClick={() => startConversation(user.userId)}
@@ -261,6 +277,10 @@ const Dashboard = () => {
             {user.user.fullName}
           </div>
         ))}
+        
+        {/* <Button onClick={(e)=>handleLogOut(e)} label="Log out" name="logout">LogOut</Button> */}
+        <Button label="Log out" onclick={handleUserLogout} />
+        
       </div>
     </div>
   );

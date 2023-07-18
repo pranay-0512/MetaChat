@@ -6,10 +6,11 @@ const Button = ({
   name = '',
   type = 'submit',
   className = '',
+  onclick= ()=>{}
 }) => {
   return (
     <div>
-      <button name={name} type={type} className={`button ${className}`}>
+      <button name={name} type={type} className={`button ${className}`} onClick={onclick}>
         {label}
       </button>
     </div>
