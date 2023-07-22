@@ -24,7 +24,7 @@ const Dashboard = () => {
     setSelectedChat(user);
     try {
       const response = await fetch(
-        `https://localhost:8000/api/message/${user.conversationId}`
+        `http://localhost:8000/api/message/${user.conversationId}`
       );
       const data = await response.json();
       setMessages(data);
@@ -46,7 +46,7 @@ const Dashboard = () => {
         senderId: loggedId,
         message: `${text}`,
       };
-      const response = await fetch("https://localhost:8000/api/message", {
+      const response = await fetch("http://localhost:8000/api/message", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -78,7 +78,7 @@ const Dashboard = () => {
   const fetchMessages = async (conversationId) => {
     try {
       const response = await fetch(
-        `https://localhost:8000/api/message/${conversationId}`
+        `http://localhost:8000/api/message/${conversationId}`
       );
       const data = await response.json();
       setMessages(data);
@@ -104,7 +104,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://localhost:8000/api/users");
+        const response = await fetch("http://localhost:8000/api/users");
         const data = await response.json();
         const filteredUsers = data.filter((user) => user.userId !== loggedId); // filtering out the logged user, to prevent app crash
         setUsers(filteredUsers);
@@ -120,7 +120,7 @@ const Dashboard = () => {
     try {
       const senderId = loggedId;
       const response = await fetch(
-        "https://localhost:8000/api/conversation",
+        "http://localhost:8000/api/conversation",
         {
           method: "POST",
           headers: {
@@ -148,7 +148,7 @@ const Dashboard = () => {
   const fetchExistingConversation = async () => {
     try {
       const response = await fetch(
-        `https://localhost:8000/api/conversation/${loggedId}`
+        `http://localhost:8000/api/conversation/${loggedId}`
       );
       const data = await response.json();
       setExistingConvo(data);
