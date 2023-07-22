@@ -132,7 +132,6 @@ const Dashboard = () => {
       if (response.ok) {
         fetchExistingConversation();
         const receiverUser = users.find((user) => user.userId === receiverId);
-        setSelectedChat(receiverUser);
         const conversationId = receiverUser.conversationId;
         // console.log(conversationId, "Conversation id created")
         fetchMessages(conversationId);
@@ -266,10 +265,11 @@ const Dashboard = () => {
         )}
       </div>
       <div className="right">
+        <div>
         <span className="toggle-icon" onClick={toggleUsers}>
           <FontAwesomeIcon icon={faBars} />
-        </span>
-        {showUsers &&
+        </span> Start a new conversation with someone</div>
+        {showUsers && 
           users.map((user) => (
             <div
               className="chat-item"
@@ -277,7 +277,8 @@ const Dashboard = () => {
             >
               {user.user.fullName}
             </div>
-          ))}
+          ))
+          }
       </div>
     </div>
   );
