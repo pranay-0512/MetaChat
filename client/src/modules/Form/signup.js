@@ -14,7 +14,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://192.168.0.212:8000/api/register',{
+    const res = await fetch('https://192.168.0.212:8000/api/register',{
       method:'POST',
       headers:{
         'Content-type':'application/json'
